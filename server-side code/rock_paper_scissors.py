@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
 import secrets
+import utils
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -68,22 +70,42 @@ class register(Resource):
 
 
 
-class Wins(Resource):
+# class Wins(Resource):
+#     def __init__(self):
+#         self.reqparse = reqparse.RequestParser()
+#         self.reqparse.add_argument('token', type = str, required = True, location = 'json')
+#
+#
+#     def get(self):
+#         args = self.reqparse.parse_args()
+#         token = args['token']
+#         register = game['register']
+#         for player in register:
+#             return game['wins']['player1']
+#
+#
+#
+# api.add_resource(register, '/register')
+
+class status(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('token', type = str, required = True, location = 'json')
+        self.reqparse.add_argument('move', type = int, required = True, location = 'json')
 
-
-    def get(self):
+    def post(self):
         args = self.reqparse.parse_args()
         token = args['token']
+        move = args['move']
         register = game['register']
-        for player in register:
-            return game['wins']['player1']
+        player = utils.get_key(register, token)
+        if player != -1:
+            game[player] = move
+            return 1
+        else:
+            return -1
 
-
-
-api.add_resource(register, '/register')
 
 if __name__ == '__main__':
     app.run(debug = True)
+    # print(utils.get_key(game['register'], None))
