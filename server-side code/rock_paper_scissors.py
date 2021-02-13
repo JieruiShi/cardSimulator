@@ -17,8 +17,8 @@ game = {
         'previousGame': None, #1 for player1's win, 2 for player2's win， 0 for tie
     },
     'wins': {
-        'player1': 0,
-        'player2': 0,
+        'player1': 2,
+        'player2': 1,
         'tie': 0
     }
 }
@@ -65,8 +65,6 @@ class register(Resource):
         else:
             return -1
 
-
-
 class status(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
@@ -78,9 +76,14 @@ class status(Resource):
         token = args['token']
         move = args['move']
         register = game['register']
+        status = game['status']
         player = utils.get_key(register, token)
         if player != -1:
-            game[player] = move
+            game['status'][player] = move
+            if status['player1'] != None and status['player2'] != None:
+                previousGame = utils.play(status['player1'], status['player2'])
+                status['previousGame'] = previousGame
+            print(game)
             return 1
         else:
             return -1
@@ -89,7 +92,6 @@ class wins(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('token', type = str, required = True, location = 'json')
-
 
     def get(self):
         args = self.reqparse.parse_args()
@@ -105,9 +107,10 @@ class wins(Resource):
             return -1
 
 
-
-
 api.add_resource(register, '/register')
+api.add_resource(status, '/status')
+api.add_resource(wins, '/wins')
+
 
 if __name__ == '__main__':
     app.run(debug = True)
