@@ -3,7 +3,6 @@ from flask_restful import Api, Resource, reqparse
 import secrets
 import utils
 
-
 app = Flask(__name__)
 api = Api(app)
 
@@ -67,6 +66,7 @@ class register(Resource):
             return -1
 
 
+
 class status(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
@@ -85,7 +85,29 @@ class status(Resource):
         else:
             return -1
 
+class wins(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('token', type = str, required = True, location = 'json')
+
+
+    def get(self):
+        args = self.reqparse.parse_args()
+        token = args['token']
+        register = game['register']
+        for player in register:
+            if register[player] == token:
+                player_number = utils.get_key(register,token)
+                win_number = game['wins'][player_number]
+                return win_number
+
+            else:
+                return -1
+
+
+
+
+api.add_resource(register, '/register')
 
 if __name__ == '__main__':
     app.run(debug = True)
-    # print(utils.get_key(game['register'], None))
