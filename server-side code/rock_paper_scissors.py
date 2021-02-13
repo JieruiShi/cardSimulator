@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
+import secrets
 
 app = Flask(__name__)
 api = Api(app)
@@ -36,11 +37,32 @@ game = {
 # api.add_resource(hello2, '/hello2')
 
 class register(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('token', type = str, required = True, location = 'json')
+
     def get(self):
-        for
+        register = game['register']
+        for player in register:
+            if register[player] == None:
+                token = secrets.token_hex(4)
+                register[player] = token
+                print(game)
+                return token
+        else:
+            return -1
 
-
-        return game['register']['player1']
+    def post(self):
+        args = self.reqparse.parse_args()
+        token = args['token']
+        register = game['register']
+        for player in register:
+            if register[player] == token:
+                register[player] = None
+                print(game)
+                return 1
+        else:
+            return -1
 
 api.add_resource(register, '/register')
 
