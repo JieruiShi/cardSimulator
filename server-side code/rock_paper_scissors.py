@@ -101,8 +101,8 @@ class wins(Resource):
                 win_number = game['wins'][player_number]
                 return win_number
 
-            else:
-                return -1
+        else:
+            return -1
 
 
 
