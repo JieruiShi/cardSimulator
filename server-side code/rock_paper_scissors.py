@@ -55,7 +55,7 @@ class register(Resource):
     def post(self):
         args = self.reqparse.parse_args()
         token = args['token']
-        register = game['register']
+
         for player in register:
             if register[player] == token:
                 register[player] = None
@@ -63,6 +63,25 @@ class register(Resource):
                 return 1
         else:
             return -1
+
+
+
+
+
+class Wins(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('token', type = str, required = True, location = 'json')
+
+
+    def get(self):
+        args = self.reqparse.parse_args()
+        token = args['token']
+        register = game['register']
+        for player in register:
+            return game['wins']['player1']
+
+
 
 api.add_resource(register, '/register')
 
